@@ -20,11 +20,9 @@
 
         <br>
         <br>
-        <hr>
-        <br>
 
         <#list root.checkboxes as checkbox >
-
+            <hr>
             <div class="checkbox-style">
                 <label> ${checkbox.label} </label>
                 <@spring.formCheckbox path="root.checkboxes[${checkbox?index}].checked"/>

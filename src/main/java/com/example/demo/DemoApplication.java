@@ -7,47 +7,58 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.*;
 
 @SpringBootApplication
 @Controller
 public class DemoApplication {
+    private Root root = new Root();
 
     @ModelAttribute("root")
-    public Root root(){
-        Root root = new Root();
-
-        List<Checkbox> checkboxes = new ArrayList<>();
-
-        for(int i = 0; i < 10; i++){
-
-            List<ChildCheckbox> childCheckboxes = new ArrayList<>();
-
-            for(int j = 0; j < 5; j++){
-                String childLabel = "child " + j;
-                childCheckboxes.add(new ChildCheckbox(childLabel, false));
-            }
-
-            String label = "label " + i;
-            checkboxes.add(new Checkbox(label,false, childCheckboxes));
-        }
+    public Root root() {
 
         root.setTitle("ROOT");
-        root.setCheckboxes(checkboxes);
+        root.setCheckboxes(getDummyCheckboxes());
 
         return root;
     }
 
-    @PostMapping(value="/add")
-    public String add(Root root){
+    @GetMapping
+    public String index() {
+        return "index";
+    }
 
+    @PostMapping(value = "/add")
+    public String add(Root root) {
+
+        this.root = root;
 
         return "redirect:/";
     }
 
-    @GetMapping
-    public String index(){
-        return "index";
+    private List<Checkbox> getDummyCheckboxes() {
+
+        if (this.root.getCheckboxes() == null) {
+            List<Checkbox> checkboxes = new ArrayList<>();
+
+            for (int i = 0; i < 10; i++) {
+
+                List<ChildCheckbox> childCheckboxes = new ArrayList<>();
+
+                for (int j = 0; j < 5; j++) {
+                    String childLabel = "child " + "[ " + j + " ] ";
+                    childCheckboxes.add(new ChildCheckbox(childLabel, false));
+                }
+
+                String label = "parent " + "[ " + i + " ] ";
+                checkboxes.add(new Checkbox(label, false, childCheckboxes));
+            }
+
+            return checkboxes;
+        }
+
+        return this.root.getCheckboxes();
     }
 
     public static void main(String[] args) {
